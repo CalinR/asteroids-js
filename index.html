@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Asteroids</title>
+    <style>
+      html, body{ 
+        height: 100%;
+      }
+      body {
+        background: #222;
+      }
+      canvas {
+        background: #000;
+        margin: 0 auto;
+        width: 640px;
+        height: 640px;
+      }
+      .container {
+        display: flex;
+        justify-content: center;
+        height: 100%;
+        flex-direction: column;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <canvas id="game" width="1280" height="1280"></canvas>
+    </div>
+    <script type="text/javascript" src="dist/main.js"></script>
+  </body>
+</html>
