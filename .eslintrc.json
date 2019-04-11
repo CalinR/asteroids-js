@@ -6,6 +6,7 @@
         "localStorage": true
     },
     "rules": {
+        "no-bitwise": ["error", { "allow": ["<<", ">>"] }],
         "no-underscore-dangle": ["error", { "allowAfterThis": true }],
         "no-param-reassign": [2, { "props": false }],
         "indent": ["error", 2, {"SwitchCase": 1}],

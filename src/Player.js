@@ -1,6 +1,6 @@
 import Vector2 from './Vector2';
-import Polygon from './Polygon';
 import Projectile from './Projectile';
+import { playerGraphic } from './graphics';
 
 /* eslint-disable class-methods-use-this */
 const controls = {
@@ -17,26 +17,9 @@ export default class Player {
     this.shooting = false;
     this.velocity = new Vector2(0, 0);
     this.position = new Vector2(x, y);
-    this.object = {
-      outline: new Polygon([
-        new Vector2(-20, 30),
-        new Vector2(0, -30),
-        new Vector2(20, 30),
-      ]),
-      base: new Polygon([
-        new Vector2(16, 20),
-        new Vector2(-16, 20),
-      ]),
-      flame: new Polygon([
-        new Vector2(-10, 20),
-        new Vector2(0, 40),
-        new Vector2(10, 20),
-      ]),
-    };
-    this.hitbox = {
-      width: 40,
-      height: 60,
-    };
+    this.object = playerGraphic;
+    this.width = 40;
+    this.height = 60;
     this.rotation = 90;
     this.moveSpeed = 8;
     this.rotateSpeed = 64;
@@ -103,18 +86,20 @@ export default class Player {
     this.position.x += this.velocity.x * deltaTime;
     this.position.y += this.velocity.y * deltaTime;
 
-    this.velocity.multiply(this.inertia);
+    // Apply friction to velocity and use bitwise shift to round number
+    this.velocity.x = (this.velocity.x * this.inertia) << 0;
+    this.velocity.y = (this.velocity.y * this.inertia) << 0;
 
-    if (this.position.x < -this.hitbox.width) {
-      this.position.x = this.game.width + this.hitbox.width;
-    } else if (this.position.x > this.game.width + this.hitbox.width) {
-      this.position.x = -this.hitbox.width;
+    if (this.position.x < -this.width) {
+      this.position.x = this.game.width + this.width;
+    } else if (this.position.x > this.game.width + this.width) {
+      this.position.x = -this.width;
     }
 
-    if (this.position.y < -this.hitbox.height) {
-      this.position.y = this.game.height + this.hitbox.height;
-    } else if (this.position.y > this.game.height + this.hitbox.height) {
-      this.position.y = -this.hitbox.height;
+    if (this.position.y < -this.height) {
+      this.position.y = this.game.height + this.height;
+    } else if (this.position.y > this.game.height + this.height) {
+      this.position.y = -this.height;
     }
 
     if (this.shooting && Date.now() > this.lastShot + this.timeBetweenShots) {
