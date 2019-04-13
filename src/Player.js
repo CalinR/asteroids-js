@@ -12,6 +12,7 @@ const controls = {
 
 export default class Player {
   constructor(x = 0, y = 0, game) {
+    this.type = 'player';
     this.game = game;
     this.axis = new Vector2(0, 0);
     this.shooting = false;
@@ -118,16 +119,15 @@ export default class Player {
    */
   draw(context) {
     const rotation = (this.rotation - 90) % 360; // offset rotation by negative 90 degrees
+    const radians = rotation * Math.PI / 180;
 
     context.save();
-    context.translate(this.position.x, this.position.y);
-    context.rotate(rotation * Math.PI / 180);
     context.lineWidth = 2;
     context.strokeStyle = '#fff';
-    this.object.outline.draw(context);
-    this.object.base.draw(context);
+    this.object.outline.draw(context, this.position, radians);
+    this.object.base.draw(context, this.position, radians);
     if (this.frameCount > 4 && this.axis.y < 0) {
-      this.object.flame.draw(context);
+      this.object.flame.draw(context, this.position, radians);
     }
     context.restore();
 

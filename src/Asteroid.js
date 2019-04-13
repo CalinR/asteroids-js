@@ -3,6 +3,7 @@ import { asteroidGraphics } from './graphics';
 
 export default class Asteroid {
   constructor(x = 0, y = 0, rotation = 90, speed = 20, rotationSpeed = 20, size = 1, game) {
+    this.type = 'asteroid';
     this.position = new Vector2(x, y);
     this.rotation = rotation;
     this.spin = 0;
@@ -42,13 +43,24 @@ export default class Asteroid {
     }
   }
 
+  hit(hitPoint = new Vector2(0, 0)) {
+    console.log(hitPoint);
+
+    this.remove();
+  }
+
+  remove() {
+    const index = this.game.gameObjects.indexOf(this);
+    this.game.gameObjects.splice(index, 1);
+  }
+
   draw(context) {
+    const radians = this.spin * Math.PI / 180;
+
     context.save();
-    context.translate(this.position.x, this.position.y);
-    context.rotate(this.spin * Math.PI / 180);
     context.lineWidth = 2;
     context.strokeStyle = '#fff';
-    this.object.draw(context);
+    this.object.draw(context, this.position, radians);
     context.restore();
   }
 }
