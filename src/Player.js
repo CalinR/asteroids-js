@@ -1,6 +1,7 @@
 import Vector2 from './Vector2';
 import Projectile from './Projectile';
 import { playerGraphic } from './graphics';
+import GameObject from './GameObject';
 
 /* eslint-disable class-methods-use-this */
 const controls = {
@@ -10,18 +11,13 @@ const controls = {
   SHOOT: ' ',
 };
 
-export default class Player {
-  constructor(x = 0, y = 0, game) {
-    this.type = 'player';
-    this.game = game;
+export default class Player extends GameObject {
+  constructor(position, rotation, game) {
+    super(position, rotation, 'player', game);
     this.axis = new Vector2(0, 0);
     this.shooting = false;
     this.velocity = new Vector2(0, 0);
-    this.position = new Vector2(x, y);
-    this.object = playerGraphic;
-    this.width = 40;
-    this.height = 60;
-    this.rotation = 90;
+    this.shape = playerGraphic;
     this.moveSpeed = 8;
     this.rotateSpeed = 64;
     this.inertia = 0.99;
@@ -74,15 +70,13 @@ export default class Player {
     }
   }
 
-  /**
-   * @param {number} deltaTime
-   */
   update(deltaTime) {
-    this.rotation += ((this.rotateSpeed * this.axis.x) * deltaTime) % 360;
-    const radians = this.rotation * Math.PI / 180;
+    const { width, height } = this.shape.outline;
 
-    this.velocity.x += (Math.cos(radians) * this.axis.y) * this.moveSpeed;
-    this.velocity.y += (Math.sin(radians) * this.axis.y) * this.moveSpeed;
+    this.rotation += ((this.rotateSpeed * this.axis.x) * deltaTime) % 360;
+
+    this.velocity.x += (Math.cos(this.radians) * this.axis.y) * this.moveSpeed;
+    this.velocity.y += (Math.sin(this.radians) * this.axis.y) * this.moveSpeed;
 
     this.position.x += this.velocity.x * deltaTime;
     this.position.y += this.velocity.y * deltaTime;
@@ -91,16 +85,16 @@ export default class Player {
     this.velocity.x = (this.velocity.x * this.inertia) << 0;
     this.velocity.y = (this.velocity.y * this.inertia) << 0;
 
-    if (this.position.x < -this.width) {
-      this.position.x = this.game.width + this.width;
-    } else if (this.position.x > this.game.width + this.width) {
-      this.position.x = -this.width;
+    if (this.position.x < -width) {
+      this.position.x = this.game.width + width;
+    } else if (this.position.x > this.game.width + width) {
+      this.position.x = -width;
     }
 
-    if (this.position.y < -this.height) {
-      this.position.y = this.game.height + this.height;
-    } else if (this.position.y > this.game.height + this.height) {
-      this.position.y = -this.height;
+    if (this.position.y < -height) {
+      this.position.y = this.game.height + height;
+    } else if (this.position.y > this.game.height + height) {
+      this.position.y = -height;
     }
 
     if (this.shooting && Date.now() > this.lastShot + this.timeBetweenShots) {
@@ -110,24 +104,19 @@ export default class Player {
   }
 
   shoot() {
-    const bullet = new Projectile(this, this.position, this.rotation, 500, this.game);
+    const { x, y } = this.position;
+    const bullet = new Projectile(new Vector2(x, y), this.rotation, 500, this, this.game);
     this.game.addObject(bullet);
   }
 
-  /**
-   * @param {CanvasRenderingContext2D} context
-   */
   draw(context) {
-    const rotation = (this.rotation - 90) % 360; // offset rotation by negative 90 degrees
-    const radians = rotation * Math.PI / 180;
-
     context.save();
     context.lineWidth = 2;
     context.strokeStyle = '#fff';
-    this.object.outline.draw(context, this.position, radians);
-    this.object.base.draw(context, this.position, radians);
+    this.shape.outline.draw(context, this.position, this.radians);
+    this.shape.base.draw(context, this.position, this.radians);
     if (this.frameCount > 4 && this.axis.y < 0) {
-      this.object.flame.draw(context, this.position, radians);
+      this.shape.flame.draw(context, this.position, this.radians);
     }
     context.restore();
 

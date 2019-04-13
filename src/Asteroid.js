@@ -1,34 +1,33 @@
-import Vector2 from './Vector2';
+// import Vector2 from './Vector2';
+import GameObject from './GameObject';
 import { asteroidGraphics } from './graphics';
+import Vector2 from './Vector2';
 
-export default class Asteroid {
-  constructor(x = 0, y = 0, rotation = 90, speed = 20, rotationSpeed = 20, size = 1, game) {
-    this.type = 'asteroid';
-    this.position = new Vector2(x, y);
-    this.rotation = rotation;
-    this.spin = 0;
+export default class Asteroid extends GameObject {
+  constructor(position, rotation, speed = 20, spinSpeed = 20, size = 1, game) {
+    super(position, rotation, 'asteroid', game);
     this.speed = speed;
-    this.rotationSpeed = rotationSpeed;
+    this.spin = 0;
+    this.spinSpeed = spinSpeed;
     this.size = size;
-    this.game = game;
-    this.object = Asteroid.getShape(size);
-    this.height = 90;
-    this.width = 90;
+    this.shape = this.getNewShape();
   }
 
-  static getShape(size = 1) {
-    const shapes = asteroidGraphics[size];
+  getNewShape() {
+    const shapes = asteroidGraphics[this.size];
     const shapeIndex = Math.floor((Math.random() * shapes.length));
+    const shape = shapes[shapeIndex];
+    this.width = shape.width / 2;
+    this.height = shape.height / 2;
 
-    return shapes[shapeIndex];
+    return shape;
   }
 
   update(deltaTime) {
-    this.spin += (this.rotationSpeed * deltaTime) % 360;
-    const radians = this.rotation * Math.PI / 180;
+    this.spin += (this.spinSpeed * deltaTime) % 360;
 
-    this.position.x -= (Math.cos(radians) * this.speed) * deltaTime;
-    this.position.y -= (Math.sin(radians) * this.speed) * deltaTime;
+    this.position.x -= (Math.cos(this.radians) * this.speed) * deltaTime;
+    this.position.y -= (Math.sin(this.radians) * this.speed) * deltaTime;
 
     if (this.position.x < -this.width) {
       this.position.x = this.game.width + this.width;
@@ -46,21 +45,14 @@ export default class Asteroid {
   hit(hitPoint = new Vector2(0, 0)) {
     console.log(hitPoint);
 
-    this.remove();
-  }
-
-  remove() {
-    const index = this.game.gameObjects.indexOf(this);
-    this.game.gameObjects.splice(index, 1);
+    super.remove();
   }
 
   draw(context) {
-    const radians = this.spin * Math.PI / 180;
-
     context.save();
     context.lineWidth = 2;
     context.strokeStyle = '#fff';
-    this.object.draw(context, this.position, radians);
+    this.shape.draw(context, this.position, this.radians);
     context.restore();
   }
 }

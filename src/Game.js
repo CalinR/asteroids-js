@@ -1,5 +1,6 @@
 import Player from './Player';
 import Asteroid from './Asteroid';
+import Vector2 from './Vector2';
 
 export default class Game {
   constructor(canvas) {
@@ -22,8 +23,8 @@ export default class Game {
   }
 
   init() {
-    this.player = new Player(this.width / 2, this.height / 2, this);
-    const asteroid = new Asteroid(100, 100, 120, 100, 20, 1, this);
+    this.player = new Player(new Vector2(this.width / 2, this.height / 2), 90, this);
+    const asteroid = new Asteroid(new Vector2(100, 100), 120, 100, 20, 1, this);
 
     this.addObject(asteroid);
     window.requestAnimationFrame(() => this.update());

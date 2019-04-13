@@ -24,6 +24,20 @@ export default class Polygon {
     context.closePath();
   }
 
+  get width() {
+    const xMin = this.points.reduce((min, p) => (p.x < min ? p.x : min), Infinity);
+    const xMax = this.points.reduce((max, p) => (p.x > max ? p.x : max), -Infinity);
+
+    return xMax - xMin;
+  }
+
+  get height() {
+    const yMin = this.points.reduce((min, p) => (p.y < min ? p.y : min), Infinity);
+    const yMax = this.points.reduce((max, p) => (p.y > max ? p.y : max), -Infinity);
+
+    return yMax - yMin;
+  }
+
   static pointWithinPolygon(point = new Vector2(0, 0), poly = new Polygon(), polyPosition = new Vector2(0, 0)) {
     let inside = false;
     const p = poly.points;

@@ -3,18 +3,18 @@ import Polygon from './Polygon';
 
 export const playerGraphic = {
   outline: new Polygon([
-    new Vector2(-20, 30),
-    new Vector2(0, -30),
-    new Vector2(20, 30),
+    new Vector2(30, -20),
+    new Vector2(-30, 0),
+    new Vector2(30, 20),
   ]),
   base: new Polygon([
-    new Vector2(16, 20),
-    new Vector2(-16, 20),
+    new Vector2(20, 16),
+    new Vector2(20, -16),
   ]),
   flame: new Polygon([
-    new Vector2(-10, 20),
-    new Vector2(0, 40),
-    new Vector2(10, 20),
+    new Vector2(20, -10),
+    new Vector2(40, 0),
+    new Vector2(20, 10),
   ]),
 };
 
@@ -65,3 +65,8 @@ export const asteroidGraphics = {
     ]),
   ],
 };
+
+export const bullet = new Polygon([
+  new Vector2(-4, 0),
+  new Vector2(4, 0),
+]);
