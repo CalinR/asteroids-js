@@ -6,22 +6,29 @@ export default class Polygon {
   }
 
   draw(context, origin = new Vector2(0, 0), radians = 0) {
-    const cos = Math.cos(radians);
-    const sin = Math.sin(radians);
+    const rotatedPoly = this.getRotatedPoints(radians);
 
     context.beginPath();
-    this.points.forEach((point, i) => {
-      const x = (cos * point.x) - (sin * point.y);
-      const y = (sin * point.x) + (cos * point.y);
-
+    rotatedPoly.points.forEach((point, i) => {
       if (i === 0) {
-        context.moveTo(x + origin.x, y + origin.y);
+        context.moveTo(point.x + origin.x, point.y + origin.y);
       } else {
-        context.lineTo(x + origin.x, y + origin.y);
+        context.lineTo(point.x + origin.x, point.y + origin.y);
       }
     });
     context.stroke();
     context.closePath();
+  }
+
+  getRotatedPoints(radians) {
+    const cos = Math.cos(radians);
+    const sin = Math.sin(radians);
+
+    return new Polygon(this.points.map((point) => {
+      const x = (cos * point.x) - (sin * point.y);
+      const y = (sin * point.x) + (cos * point.y);
+      return { x, y };
+    }));
   }
 
   get width() {

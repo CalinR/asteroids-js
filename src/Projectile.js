@@ -19,12 +19,12 @@ export default class Projectile extends GameObject {
     }
 
     const asteroids = gameObjects.filter(gameObject => gameObject.type === 'asteroid');
+    const collisionPoly = new Polygon([this.shape.points[0]]);
 
     asteroids.forEach((asteroid) => {
-      if (asteroid.shape) {
-        if (Polygon.pointWithinPolygon(this.position, asteroid.shape, asteroid.position)) {
-          asteroid.hit(this.position);
-        }
+      const collision = asteroid.checkForCollision(collisionPoly);
+      if (collision) {
+        asteroid.hit(collision);
       }
     });
   }
